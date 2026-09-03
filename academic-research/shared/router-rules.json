@@ -1,0 +1,104 @@
+{
+  "version": 2,
+  "precedence": [
+    "ars-academic-pipeline",
+    "ars-academic-paper-reviewer",
+    "ars-academic-paper",
+    "ars-deep-research"
+  ],
+  "skills": {
+    "ars-academic-pipeline": {
+      "skill_path": ".agents/skills/academic-pipeline/SKILL.md",
+      "triggers": [
+        "完整科研流程",
+        "research to paper",
+        "从研究问题到论文终稿",
+        "full academic workflow",
+        "end-to-end academic workflow",
+        "从研究问题开始",
+        "完成文献调研、证据矩阵、论文规划、写作、审稿和返修"
+      ]
+    },
+    "ars-academic-paper-reviewer": {
+      "skill_path": ".agents/skills/academic-paper-reviewer/SKILL.md",
+      "triggers": [
+        "审稿",
+        "审稿人",
+        "peer review",
+        "manuscript assessment",
+        "methodology review",
+        "reviewer simulation"
+      ]
+    },
+    "ars-academic-paper": {
+      "skill_path": ".agents/skills/academic-paper/SKILL.md",
+      "triggers": [
+        "论文规划",
+        "outline",
+        "academic writing",
+        "academic rewriting",
+        "draft",
+        "revision",
+        "citation checking",
+        "abstract",
+        "写这一章节",
+        "写这个章节",
+        "撰写章节",
+        "论文写作",
+        "改写论文",
+        "引用检查",
+        "摘要",
+        "根据现有 evidence matrix",
+        "results and discussion"
+      ]
+    },
+    "ars-deep-research": {
+      "skill_path": ".agents/skills/deep-research/SKILL.md",
+      "triggers": [
+        "文献检索",
+        "文献综述",
+        "研究现状",
+        "research gap",
+        "evidence verification",
+        "fact check",
+        "systematic review",
+        "meta-analysis"
+      ]
+    }
+  },
+  "materials_science_terms": [
+    "al-sc",
+    "al-sc-zr",
+    "al3sc",
+    "al3(sc,zr)",
+    "precipitation strengthening",
+    "recrystallization",
+    "grain refinement",
+    "microstructure",
+    "tem",
+    "sem",
+    "ebsd",
+    "mechanical properties",
+    "析出强化",
+    "再结晶",
+    "晶粒细化",
+    "微观组织",
+    "力学性能"
+  ],
+  "academic_intent_terms": [
+    "research",
+    "literature",
+    "evidence",
+    "mechanism",
+    "paper",
+    "manuscript",
+    "review",
+    "研究",
+    "文献",
+    "证据",
+    "机理",
+    "机制",
+    "论文",
+    "审稿"
+  ]
+}

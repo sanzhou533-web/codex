@@ -1,0 +1,7 @@
+interface:
+  display_name: "ARS Academic Paper"
+  short_description: "Evidence-grounded academic planning and writing"
+  default_prompt: "Use $ars-academic-paper to draft or revise this manuscript from the available evidence."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "ARS Academic Paper Reviewer"
+  short_description: "Read-only manuscript and methodology assessment"
+  default_prompt: "Use $ars-academic-paper-reviewer to conduct an evidence-anchored review of this manuscript."
+
+policy:
+  allow_implicit_invocation: true

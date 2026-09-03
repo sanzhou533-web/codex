@@ -1,0 +1,7 @@
+interface:
+  display_name: "ARS Academic Pipeline"
+  short_description: "End-to-end research-to-paper workflow orchestration"
+  default_prompt: "Use $ars-academic-pipeline to run this project from research question through final verification."
+
+policy:
+  allow_implicit_invocation: true
