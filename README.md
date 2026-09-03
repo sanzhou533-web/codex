@@ -26,3 +26,33 @@ python academic-research/scripts/smoke_test.py
 ```
 
 The adapted academic workflow is attributed and licensed separately under [`academic-research/`](academic-research/NOTICE.md); see the [complete upstream CC BY-NC 4.0 license](academic-research/LICENSE).
+
+## Academic Skill Hub
+
+This repository includes a governance layer for safely maintaining project-local academic skills over time.
+
+Active suite: **ARS Academic Research Suite**
+
+Active skills:
+
+- `ars-deep-research`
+- `ars-academic-paper`
+- `ars-academic-paper-reviewer`
+- `ars-academic-pipeline`
+
+Use the [Skill Registry](skill-registry/REGISTRY.md) for the authoritative active inventory, the [Source Ledger](skill-sources/SOURCES.md) for provenance and licensing, and the [Skill Integration Guide](docs/SKILL_INTEGRATION_GUIDE.md) before adding a third-party skill. Run both validators from the repository root:
+
+```text
+python academic-research/scripts/smoke_test.py
+python scripts/validate_skill_hub.py
+```
+
+Reserved future namespace architecture:
+
+- `nature-*` — Nature or journal-specific workflows
+- `stats-*` — statistics and quantitative analysis
+- `materials-*` — materials-science domain workflows
+- `figures-*` — scientific figures and visualization
+- `data-*` — research-data processing
+
+These future namespaces are governance reservations only. They do not mean that any corresponding skills are installed or active.

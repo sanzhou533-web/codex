@@ -1,6 +1,20 @@
-# Academic Research Task Router
+# Academic Skill Hub and Research Router
 
-These instructions apply to this repository. They add an academic workflow router without changing how unrelated coding tasks are handled.
+These instructions apply to this repository. They govern the Academic Skill Hub and route academic work without changing how unrelated coding tasks are handled.
+
+## Hub governance
+
+- [`skill-registry/REGISTRY.md`](skill-registry/REGISTRY.md) is the source of truth for skills formally included in this repository.
+- [`skill-sources/SOURCES.md`](skill-sources/SOURCES.md) records provenance, pinned versions, licenses, and adaptations.
+- Follow [`docs/SKILL_INTEGRATION_GUIDE.md`](docs/SKILL_INTEGRATION_GUIDE.md) before adding or updating a third-party skill.
+- Integrate only a skill or suite explicitly requested by the user. Never treat a planned namespace as an installed skill.
+- Check frontmatter names against repository, user, official, and other third-party skills before integration. Adapt collision-prone names to an approved namespace.
+
+## Two-level routing
+
+Level 1 selects an installed domain or suite. Level 2 selects the specific skill and mode inside that suite. ARS is currently the only active suite. `nature-*`, `stats-*`, `materials-*`, `figures-*`, and `data-*` are reserved extension namespaces, not installed capabilities.
+
+An explicit `$skill-name` selection has priority over implicit routing. For implicit routing, choose the most specific installed skill that matches the requested outcome. A domain specialization must never override an explicit compatible selection. If a future general and journal-specific writer both exist, a generic request such as “帮我写论文” should use the general academic writer, while an explicit Nature-style request may use the Nature-specific skill. Until such a skill is actually registered and present, continue using the active ARS route or report that the requested specialization is unavailable.
 
 ## Skill discovery
 
@@ -13,7 +27,7 @@ The project-local academic skills are:
 
 For an academic request, select one entry skill first and read its `SKILL.md` completely. Follow links from that skill only when the current mode needs them. Do not load all four skills by default. Explicit user selection such as `$ars-deep-research` or `$ars-academic-paper mode=revision` overrides automatic routing unless it conflicts with the supplied material or requested outcome; explain any conflict before changing routes. Implicit routing remains enabled for all four skills.
 
-## Automatic routing
+## Level 2: ARS automatic routing
 
 Apply the following precedence when a request contains overlapping terms:
 
