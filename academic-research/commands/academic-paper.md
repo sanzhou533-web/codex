@@ -3,12 +3,12 @@
 This is a Codex prompt recipe, not a registered slash command.
 
 ```text
-$academic-paper mode=outline-only
+$ars-academic-paper mode=outline-only
 根据已验证的 evidence matrix 为 Al-Sc-Zr 章节建立详细大纲；不要补写缺失证据。
 ```
 
 ```text
-Use the project skill at .agents/skills/academic-paper/SKILL.md in citation-check mode.
+Use the `ars-academic-paper` project skill at .agents/skills/academic-paper/SKILL.md in citation-check mode.
 Audit citation identity and claim support independently from language quality.
 ```
 

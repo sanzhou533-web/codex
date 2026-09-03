@@ -1,0 +1,7 @@
+interface:
+  display_name: "ARS Deep Research"
+  short_description: "Verified literature research and evidence synthesis"
+  default_prompt: "Use $ars-deep-research to investigate this research question with a verifiable evidence trail."
+
+policy:
+  allow_implicit_invocation: true

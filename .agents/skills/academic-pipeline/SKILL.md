@@ -1,11 +1,11 @@
 ---
-name: academic-pipeline
+name: ars-academic-pipeline
 description: Orchestrate an explicit end-to-end academic workflow from research question through literature, evidence, planning, writing, review, revision, verification, and finalization. Use only for 完整科研流程, research to paper, 从研究问题到论文终稿, full academic workflow, or equivalent end-to-end requests.
 metadata:
   version: "0.1.0"
   upstream: "Imbad0202/academic-research-skills@94436237913091d4739870159d241660527e8338"
   upstream_skill_version: "3.21.1"
-  depends_on: "deep-research, academic-paper, academic-paper-reviewer"
+  depends_on: "ars-deep-research, ars-academic-paper, ars-academic-paper-reviewer"
 ---
 
 # Academic Pipeline
@@ -18,9 +18,9 @@ Modes are `full` for a new end-to-end run and `resume` when the user supplies a 
 
 Resolve project-local skills relative to this file:
 
-1. Research and evidence: `../deep-research/SKILL.md`
-2. Planning, writing, and revision: `../academic-paper/SKILL.md`
-3. Review and re-review: `../academic-paper-reviewer/SKILL.md`
+1. Research and evidence: `ars-deep-research` at `../deep-research/SKILL.md`
+2. Planning, writing, and revision: `ars-academic-paper` at `../academic-paper/SKILL.md`
+3. Review and re-review: `ars-academic-paper-reviewer` at `../academic-paper-reviewer/SKILL.md`
 
 Load each dependency only when its stage begins. These paths are the runtime contract; `.claude/`, `.claude-plugin/`, external slash-command registries, fixed model declarations, and Anthropic credentials are not dependencies.
 
@@ -32,15 +32,15 @@ The canonical progression is:
 
 | Stage | Skill and mode | Required artifact or gate |
 |---|---|---|
-| 0. Intake | pipeline | Goal, available materials, scope, deliverable, constraints |
-| 1. Research question | deep-research `socratic`, `quick`, or `full` | Answerable question and scope |
-| 2. Literature | deep-research `lit-review`, `three-way-scan`, or `systematic-review` | Search record and screened corpus |
-| 3. Evidence | deep-research `fact-check` plus synthesis | Verified evidence matrix and research-gap chain |
-| 4. Planning | academic-paper `plan` or `outline-only` | Approved claim architecture and evidence map |
-| 5. Writing | academic-paper `full` | Draft plus independent citation audit status |
-| 6. Review | academic-paper-reviewer `full` or focused mode | Immutable reports and revision roadmap |
-| 7. Revision | academic-paper `revision`, then reviewer `re-review` as needed | Response matrix, revised draft, residual issues |
-| 8. Finalization | academic-paper `citation-check` and `format-convert` | Final verification record and requested output |
+| 0. Intake | ars-academic-pipeline | Goal, available materials, scope, deliverable, constraints |
+| 1. Research question | ars-deep-research `socratic`, `quick`, or `full` | Answerable question and scope |
+| 2. Literature | ars-deep-research `lit-review`, `three-way-scan`, or `systematic-review` | Search record and screened corpus |
+| 3. Evidence | ars-deep-research `fact-check` plus synthesis | Verified evidence matrix and research-gap chain |
+| 4. Planning | ars-academic-paper `plan` or `outline-only` | Approved claim architecture and evidence map |
+| 5. Writing | ars-academic-paper `full` | Draft plus independent citation audit status |
+| 6. Review | ars-academic-paper-reviewer `full` or focused mode | Immutable reports and revision roadmap |
+| 7. Revision | ars-academic-paper `revision`, then ars-academic-paper-reviewer `re-review` as needed | Response matrix, revised draft, residual issues |
+| 8. Finalization | ars-academic-paper `citation-check` and `format-convert` | Final verification record and requested output |
 
 ## Stage behavior
 

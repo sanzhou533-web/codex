@@ -15,6 +15,8 @@ This workspace was adapted from the following files in `Imbad0202/academic-resea
 
 The upstream mode names, core stage relationships, human-in-the-loop boundaries, evidence verification requirements, reviewer read-only behavior, and cross-skill handoff intent were retained in a smaller project-local form.
 
+The adapted Codex skill identities use the collision-resistant ARS namespace: `ars-deep-research`, `ars-academic-paper`, `ars-academic-paper-reviewer`, and `ars-academic-pipeline`. Directory names remain aligned with the upstream layout, but Codex discovery uses each `SKILL.md` frontmatter `name`.
+
 ## Runtime rewrites
 
 | Upstream surface | Codex workspace treatment |
@@ -22,11 +24,12 @@ The upstream mode names, core stage relationships, human-in-the-loop boundaries,
 | `.claude/CLAUDE.md` routing | Rewritten as the repository-root `AGENTS.md` academic task router. |
 | `.claude-plugin/` manifests | Not copied and not required. Project-local skills are stored under `.agents/skills/`. |
 | Claude slash-command declarations | Replaced with plain prompt recipes under `academic-research/commands/`; they do not register slash commands. |
+| Claude-facing skill names | Namespaced as `$ars-*`; implicit invocation remains enabled in each `agents/openai.yaml`. |
 | `model: opus`, `model: sonnet`, or `model: inherit` | Removed. Skills use the active Codex model unless the user explicitly changes task settings. |
 | Claude Agent/Task dispatch | Rewritten as inline staged execution. Codex subagents are optional and require explicit user request. |
 | `AskUserQuestion`, `WebSearch`, `Bash`, `Write`, `Edit` names | Rewritten as capability-neutral instructions using tools available in the active Codex task. |
 | Claude hooks | Not copied. No hook is required for routing, validation, or skill use. |
-| Upstream cross-skill relative paths | Rebased to sibling project skills and shared files; pipeline paths are explicitly validated by the smoke test. |
+| Upstream cross-skill relative paths | Rebased to sibling project skills and shared files; namespaced handoff identities and physical paths are explicitly validated by the smoke test. |
 
 ## Deliberate scope
 

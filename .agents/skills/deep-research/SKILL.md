@@ -1,5 +1,5 @@
 ---
-name: deep-research
+name: ars-deep-research
 description: Conduct evidence-grounded academic research, literature reviews, research-gap analysis, fact checking, systematic reviews, and meta-analysis. Use for 文献检索, 文献综述, 研究现状, research gap, evidence verification, fact check, systematic review, meta-analysis, or research/mechanism questions about Al-Sc and related materials science topics. Do not use when the primary deliverable is manuscript prose or a referee report.
 metadata:
   version: "0.1.0"
@@ -10,6 +10,15 @@ metadata:
 # Deep Research
 
 Produce a source-grounded research artifact with a reproducible evidence trail. Read [the shared evidence policy](../../../academic-research/shared/evidence-policy.md) before research. For Al-Sc, Al-Sc-Zr, precipitation, recrystallization, grain refinement, microscopy, or mechanical-property work, also read [the materials-science guide](../../../academic-research/references/materials-science-guide.md).
+
+## Runtime capability gate
+
+Before starting literature discovery, a current-research-status analysis, or a systematic review, verify that the current Codex task has at least one of these evidence inputs:
+
+- working web or literature-search capability; or
+- a user-supplied, searchable corpus of papers, PDFs, or source records.
+
+If neither is available, do not pretend to have searched the literature and do not use model memory to claim a current or latest research status. Tell the user exactly: `external literature verification is unavailable`. Ask the user to enable web/search or supply papers/PDFs. A pre-existing evidence matrix may still be used for writing or review, provided its verification status and limits remain visible.
 
 ## Modes
 
@@ -81,4 +90,4 @@ Unless the user requests a narrower format, provide:
 
 ## Handoff
 
-When the user next asks for writing, pass the research artifacts to `../academic-paper/SKILL.md` using [the handoff schema](../../../academic-research/shared/handoff-schema.md). Do not make the writing skill rediscover sources already verified, and do not hide unresolved rows.
+When the user next asks for writing, hand off from `ars-deep-research` to `ars-academic-paper` at `../academic-paper/SKILL.md` using [the handoff schema](../../../academic-research/shared/handoff-schema.md). Do not make the writing skill rediscover sources already verified, and do not hide unresolved rows.

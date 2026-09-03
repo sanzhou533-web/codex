@@ -1,5 +1,5 @@
 ---
-name: academic-paper-reviewer
+name: ars-academic-paper-reviewer
 description: Perform evidence-anchored peer review, manuscript assessment, methodology review, revision verification, reviewer simulation, or calibration. Use for 审稿, peer review, manuscript assessment, methodology review, reviewer simulation, or materials-journal assessment. Review is read-only by default and does not rewrite the submitted manuscript.
 metadata:
   version: "0.1.0"
@@ -13,7 +13,7 @@ Produce a rigorous, separate review artifact. Read [the shared evidence policy](
 
 ## Non-negotiable boundary
 
-Review is read-only. Do not edit, rewrite, or silently repair the submitted manuscript. Anchor each concern to a section, quotation fragment, figure/table, equation, or claim. If the user asks for changes after review, hand the frozen review to `../academic-paper/SKILL.md`.
+Review is read-only. Do not edit, rewrite, or silently repair the submitted manuscript. Anchor each concern to a section, quotation fragment, figure/table, equation, or claim. If the user asks for changes after review, hand the frozen review to `ars-academic-paper` at `../academic-paper/SKILL.md`.
 
 ## Modes
 
@@ -75,4 +75,4 @@ Allowed verdicts are `resolved`, `partially_resolved`, `unresolved`, and `not_ve
 
 ## Handoff
 
-Pass the immutable report and concern table to `../academic-paper/SKILL.md` using [the handoff schema](../../../academic-research/shared/handoff-schema.md). In a full workflow, return control to `../academic-pipeline/SKILL.md` after the review stage.
+Hand off from `ars-academic-paper-reviewer` to `ars-academic-paper` at `../academic-paper/SKILL.md`, passing the immutable report and concern table through [the handoff schema](../../../academic-research/shared/handoff-schema.md). In a full workflow, return control to `ars-academic-pipeline` at `../academic-pipeline/SKILL.md` after the review stage.

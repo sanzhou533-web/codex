@@ -2,7 +2,7 @@
 
 This is the Codex workspace's mode source of truth. It adapts the upstream ARS mode registry without depending on its runtime configuration.
 
-## deep-research
+## ars-deep-research
 
 | Mode | Output | Typical intent |
 |---|---|---|
@@ -15,7 +15,7 @@ This is the Codex workspace's mode source of truth. It adapts the upstream ARS m
 | `socratic` | Guided question refinement | Vague topic or uncertain research direction |
 | `systematic-review` | Protocol-led systematic review; optional defensible meta-analysis | PRISMA, systematic review, meta-analysis |
 
-## academic-paper
+## ars-academic-paper
 
 | Mode | Output | Typical intent |
 |---|---|---|
@@ -31,7 +31,7 @@ This is the Codex workspace's mode source of truth. It adapts the upstream ARS m
 | `disclosure` | Evidence-bounded disclosure statement | AI-use or contribution disclosure |
 | `rebuttal-audit` | Coverage/risk audit of an existing response | Check a rebuttal draft against reviewer comments |
 
-## academic-paper-reviewer
+## ars-academic-paper-reviewer
 
 | Mode | Output | Typical intent |
 |---|---|---|
@@ -42,7 +42,7 @@ This is the Codex workspace's mode source of truth. It adapts the upstream ARS m
 | `guided` | Socratic issue-by-issue review | Author learning and guided diagnosis |
 | `calibration` | Bounded performance comparison against an adjudicated set | Evaluate reviewer behavior without self-certification |
 
-## academic-pipeline
+## ars-academic-pipeline
 
 | Mode | Output | Typical intent |
 |---|---|---|
@@ -52,7 +52,7 @@ This is the Codex workspace's mode source of truth. It adapts the upstream ARS m
 ## Selection principles
 
 - Explicit user mode wins when its inputs and requested output are compatible.
-- Use `academic-pipeline` only for an explicitly end-to-end goal.
-- A vague research question favors `deep-research:socratic`; a clear writing request backed by evidence favors `academic-paper`.
-- `academic-paper-reviewer` remains read-only. Revision is a separate `academic-paper` action.
+- Use `ars-academic-pipeline` only for an explicitly end-to-end goal.
+- A vague research question favors `ars-deep-research:socratic`; a clear writing request backed by evidence favors `ars-academic-paper`.
+- `ars-academic-paper-reviewer` remains read-only. Revision is a separate `ars-academic-paper` action.
 - Quantitative meta-analysis is conditional on compatible data, not guaranteed by selecting the mode.

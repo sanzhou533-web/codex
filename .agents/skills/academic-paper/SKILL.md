@@ -1,5 +1,5 @@
 ---
-name: academic-paper
+name: ars-academic-paper
 description: Plan, outline, draft, revise, rewrite, format, or audit academic manuscripts and abstracts from supplied results or a verified evidence base. Use for 论文规划, outline, academic writing, academic rewriting, draft, revision, citation checking, abstract, or requests to write a section from existing evidence. Do not use for source discovery as the primary goal or for referee-style manuscript assessment.
 metadata:
   version: "0.1.0"
@@ -29,7 +29,7 @@ Select one mode from [the mode registry](../../../academic-research/references/m
 | `disclosure` | Venue-aware AI-use or contribution disclosure with policy status stated |
 | `rebuttal-audit` | Coverage and risk audit of an existing response draft; no new rebuttal generation |
 
-If reviewer comments are present without a response draft, use `revision-coach`. If both comments and an existing response are present and the user asks to check it, use `rebuttal-audit`. If the user primarily asks for a referee assessment, route to `../academic-paper-reviewer/SKILL.md`.
+If reviewer comments are present without a response draft, use `revision-coach`. If both comments and an existing response are present and the user asks to check it, use `rebuttal-audit`. If the user primarily asks for a referee assessment, route to `ars-academic-paper-reviewer` at `../academic-paper-reviewer/SKILL.md`.
 
 ## Evidence gate
 
@@ -81,4 +81,4 @@ Include the requested manuscript artifact plus a compact evidence note describin
 
 ## Handoff
 
-For assessment, pass an immutable review copy, manuscript version, evidence matrix, and citation-audit status to `../academic-paper-reviewer/SKILL.md` using [the handoff schema](../../../academic-research/shared/handoff-schema.md). In a full workflow, return control to `../academic-pipeline/SKILL.md` after the stage artifact is complete.
+For assessment, hand off from `ars-academic-paper` to `ars-academic-paper-reviewer` at `../academic-paper-reviewer/SKILL.md`, passing an immutable review copy, manuscript version, evidence matrix, and citation-audit status through [the handoff schema](../../../academic-research/shared/handoff-schema.md). In a full workflow, return control to `ars-academic-pipeline` at `../academic-pipeline/SKILL.md` after the stage artifact is complete.

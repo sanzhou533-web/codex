@@ -6,9 +6,9 @@ Use this schema whenever an output moves between academic skills. A handoff may 
 
 ```yaml
 handoff_version: "1.0"
-from_skill: deep-research
+from_skill: ars-deep-research
 from_mode: lit-review
-to_skill: academic-paper
+to_skill: ars-academic-paper
 requested_next_mode: full
 topic: "..."
 research_question: "..."
@@ -33,19 +33,19 @@ next_gate: "user approval or named integrity check"
 
 ## Required transitions
 
-### deep-research to academic-paper
+### ars-deep-research to ars-academic-paper
 
 Pass the research question, scope, reproducible search record, deduplicated bibliography, evidence matrix, synthesis, research-gap chain, and unresolved evidence conflicts. The paper skill must not present unverified rows as established evidence.
 
-### academic-paper to academic-paper-reviewer
+### ars-academic-paper to ars-academic-paper-reviewer
 
 Pass the immutable review copy, target journal or review standard if known, manuscript version/hash, evidence matrix, citation-audit status, author-declared limitations, and any questions the author wants reviewers to examine. Reviewers return reports separately and do not edit this copy.
 
-### academic-paper-reviewer to academic-paper
+### ars-academic-paper-reviewer to ars-academic-paper
 
 Pass every concern with `id`, `severity`, `location`, `evidence`, `rationale`, and `minimum_remedy`. Preserve disagreements and user decisions. Revision must account for each concern as `addressed`, `partially_addressed`, `declined_with_reason`, or `not_applicable`.
 
-### academic-paper to final verification
+### ars-academic-paper to final verification
 
 Pass the revised manuscript, change log, response matrix, evidence matrix, and citation audit. Recheck changed claims and references; do not assume a prior check still applies after revision.
 

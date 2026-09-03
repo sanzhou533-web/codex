@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Validate the project-local academic skills, paths, and routing examples."""
+"""Run deterministic static checks for the project-local academic workspace.
+
+This script validates configuration fixtures. It does not test Codex runtime
+discovery or implicit skill invocation.
+"""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -12,13 +17,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ROUTER_PATH = ROOT / "academic-research" / "shared" / "router-rules.json"
 EXPECTED_SAMPLES = {
-    "系统分析 Al-Sc-Zr 合金中 Al3(Sc,Zr) 析出相对再结晶抑制机制的研究现状，并识别 research gap。": "deep-research",
-    "根据现有证据帮我写这一章节。": "academic-paper",
-    "以材料学期刊审稿人的标准检查这一章节。": "academic-paper-reviewer",
-    "Compare TEM evidence for Al3Sc coarsening kinetics.": "deep-research",
+    "系统分析 Al-Sc-Zr 合金中 Al3(Sc,Zr) 析出相对再结晶抑制机制的研究现状，并识别 research gap。": "ars-deep-research",
+    "根据现有 evidence matrix 帮我写 Results and Discussion。": "ars-academic-paper",
+    "以材料学期刊审稿人的标准检查这一章节。": "ars-academic-paper-reviewer",
+    "从研究问题开始，完成文献调研、证据矩阵、论文规划、写作、审稿和返修。": "ars-academic-pipeline",
+    "Compare TEM evidence for Al3Sc coarsening kinetics.": "ars-deep-research",
 }
 EXPECTED_MODES = {
-    "deep-research": {
+    "ars-deep-research": {
         "full",
         "quick",
         "review",
@@ -28,7 +34,7 @@ EXPECTED_MODES = {
         "socratic",
         "systematic-review",
     },
-    "academic-paper": {
+    "ars-academic-paper": {
         "full",
         "plan",
         "outline-only",
@@ -41,7 +47,7 @@ EXPECTED_MODES = {
         "disclosure",
         "rebuttal-audit",
     },
-    "academic-paper-reviewer": {
+    "ars-academic-paper-reviewer": {
         "full",
         "re-review",
         "quick",
@@ -49,8 +55,15 @@ EXPECTED_MODES = {
         "guided",
         "calibration",
     },
-    "academic-pipeline": {"full", "resume"},
+    "ars-academic-pipeline": {"full", "resume"},
 }
+EXPECTED_METADATA = {
+    "ars-deep-research": "ARS Deep Research",
+    "ars-academic-paper": "ARS Academic Paper",
+    "ars-academic-paper-reviewer": "ARS Academic Paper Reviewer",
+    "ars-academic-pipeline": "ARS Academic Pipeline",
+}
+UPSTREAM_LICENSE_SHA256 = "b3848009d12a173f549ef98d9ee486e64459e8eb5d9f895bff53782b4aa86d7c"
 
 
 def load_router() -> dict:
@@ -68,7 +81,7 @@ def route(prompt: str, config: dict) -> tuple[str | None, str]:
     has_domain = any(term.casefold() in normalized for term in config["materials_science_terms"])
     has_academic_intent = any(term.casefold() in normalized for term in config["academic_intent_terms"])
     if has_domain and has_academic_intent:
-        return "deep-research", "materials-science-priority"
+        return "ars-deep-research", "materials-science-priority"
     return None, "no-match"
 
 
@@ -111,6 +124,28 @@ def validate_skill_paths(config: dict) -> list[str]:
     return results
 
 
+def validate_openai_metadata(config: dict) -> list[str]:
+    results: list[str] = []
+    for skill_name, entry in config["skills"].items():
+        skill_path = ROOT / entry["skill_path"]
+        metadata_path = skill_path.parent / "agents" / "openai.yaml"
+        if not metadata_path.is_file():
+            raise AssertionError(f"missing Codex desktop metadata: {metadata_path}")
+        metadata = metadata_path.read_text(encoding="utf-8")
+        display_name = EXPECTED_METADATA[skill_name]
+        if f'display_name: "{display_name}"' not in metadata:
+            raise AssertionError(f"display_name mismatch in {metadata_path}")
+        description_match = re.search(r'^  short_description: "(.+)"$', metadata, flags=re.MULTILINE)
+        if not description_match or not 25 <= len(description_match.group(1)) <= 64:
+            raise AssertionError(f"invalid short_description in {metadata_path}")
+        if "allow_implicit_invocation: true" not in metadata:
+            raise AssertionError(f"implicit invocation is not enabled in {metadata_path}")
+        if re.search(r"^dependencies:", metadata, flags=re.MULTILINE):
+            raise AssertionError(f"unexpected tool dependency declaration in {metadata_path}")
+        results.append(f"PASS Codex metadata: {skill_name}")
+    return results
+
+
 def validate_markdown_links() -> list[str]:
     results: list[str] = []
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
@@ -134,35 +169,109 @@ def validate_pipeline_chain() -> list[str]:
     pipeline = ROOT / ".agents" / "skills" / "academic-pipeline" / "SKILL.md"
     text = pipeline.read_text(encoding="utf-8")
     required = [
-        "../deep-research/SKILL.md",
-        "../academic-paper/SKILL.md",
-        "../academic-paper-reviewer/SKILL.md",
+        ("ars-deep-research", "../deep-research/SKILL.md"),
+        ("ars-academic-paper", "../academic-paper/SKILL.md"),
+        ("ars-academic-paper-reviewer", "../academic-paper-reviewer/SKILL.md"),
     ]
     results: list[str] = []
-    for relative in required:
-        if relative not in text:
-            raise AssertionError(f"pipeline does not declare dependency: {relative}")
+    for skill_name, relative in required:
+        if skill_name not in text or relative not in text:
+            raise AssertionError(f"pipeline does not declare dependency: {skill_name} at {relative}")
         resolved = (pipeline.parent / relative).resolve()
         if not resolved.is_file():
             raise AssertionError(f"pipeline dependency does not resolve: {resolved}")
-        results.append(f"PASS pipeline dependency: {relative}")
+        if parse_frontmatter(resolved).get("name") != skill_name:
+            raise AssertionError(f"pipeline identity/path mismatch: {skill_name} at {resolved}")
+        results.append(f"PASS pipeline dependency: {skill_name} -> {relative}")
     sequential_links = [
         (
             ROOT / ".agents" / "skills" / "deep-research" / "SKILL.md",
+            "ars-academic-paper",
             "../academic-paper/SKILL.md",
         ),
         (
             ROOT / ".agents" / "skills" / "academic-paper" / "SKILL.md",
+            "ars-academic-paper-reviewer",
             "../academic-paper-reviewer/SKILL.md",
         ),
+        (
+            ROOT / ".agents" / "skills" / "academic-paper" / "SKILL.md",
+            "ars-academic-pipeline",
+            "../academic-pipeline/SKILL.md",
+        ),
+        (
+            ROOT / ".agents" / "skills" / "academic-paper-reviewer" / "SKILL.md",
+            "ars-academic-paper",
+            "../academic-paper/SKILL.md",
+        ),
+        (
+            ROOT / ".agents" / "skills" / "academic-paper-reviewer" / "SKILL.md",
+            "ars-academic-pipeline",
+            "../academic-pipeline/SKILL.md",
+        ),
     ]
-    for source, relative in sequential_links:
-        if relative not in source.read_text(encoding="utf-8"):
-            raise AssertionError(f"missing sequential handoff in {source}: {relative}")
+    for source, target_name, relative in sequential_links:
+        source_text = source.read_text(encoding="utf-8")
+        if target_name not in source_text or relative not in source_text:
+            raise AssertionError(f"missing sequential handoff in {source}: {target_name} at {relative}")
         if not (source.parent / relative).resolve().is_file():
             raise AssertionError(f"sequential handoff does not resolve: {source} -> {relative}")
-        results.append(f"PASS sequential handoff: {source.parent.name} -> {relative}")
+        results.append(f"PASS sequential handoff: {source.parent.name} -> {target_name}")
     return results
+
+
+def validate_agents_router() -> list[str]:
+    agents_path = ROOT / "AGENTS.md"
+    text = agents_path.read_text(encoding="utf-8")
+    config = load_router()
+    for skill_name, entry in config["skills"].items():
+        if skill_name not in text or entry["skill_path"] not in text:
+            raise AssertionError(f"AGENTS.md does not map {skill_name} to {entry['skill_path']}")
+    for legacy_mention in ("$deep-research", "$academic-paper", "$academic-paper-reviewer", "$academic-pipeline"):
+        if legacy_mention in text:
+            raise AssertionError(f"legacy explicit skill invocation remains in AGENTS.md: {legacy_mention}")
+    if "external literature verification is unavailable" not in text:
+        raise AssertionError("AGENTS.md does not preserve the literature capability gate")
+    return ["PASS AGENTS.md namespaced router and capability gate"]
+
+
+def validate_handoff_schema() -> list[str]:
+    schema_path = ROOT / "academic-research" / "shared" / "handoff-schema.md"
+    text = schema_path.read_text(encoding="utf-8")
+    transitions = [
+        "ars-deep-research to ars-academic-paper",
+        "ars-academic-paper to ars-academic-paper-reviewer",
+        "ars-academic-paper-reviewer to ars-academic-paper",
+        "ars-academic-paper to final verification",
+    ]
+    for transition in transitions:
+        if transition not in text:
+            raise AssertionError(f"missing namespaced handoff transition: {transition}")
+    return ["PASS namespaced handoff schema"]
+
+
+def validate_license() -> list[str]:
+    license_path = ROOT / "academic-research" / "LICENSE"
+    if not license_path.is_file():
+        raise AssertionError(f"missing complete upstream license: {license_path}")
+    normalized_text = license_path.read_text(encoding="utf-8")
+    digest = hashlib.sha256(normalized_text.encode("utf-8")).hexdigest()
+    if digest != UPSTREAM_LICENSE_SHA256:
+        raise AssertionError(f"upstream license hash mismatch: {digest}")
+    if (ROOT / "academic-research" / "LICENSE.md").exists():
+        raise AssertionError("summary LICENSE.md remains beside complete upstream LICENSE")
+    notice = (ROOT / "academic-research" / "NOTICE.md").read_text(encoding="utf-8")
+    notice_markers = [
+        "https://github.com/Imbad0202/academic-research-skills",
+        "94436237913091d4739870159d241660527e8338",
+        "adaptation",
+        "No endorsement",
+        "CC BY-NC 4.0",
+    ]
+    missing = [marker for marker in notice_markers if marker not in notice]
+    if missing:
+        raise AssertionError(f"NOTICE.md missing required attribution markers: {missing}")
+    return [f"PASS complete upstream LICENSE and NOTICE: sha256={digest}"]
 
 
 def validate_codex_runtime_surface() -> list[str]:
@@ -185,18 +294,22 @@ def main() -> int:
     config = load_router()
     output: list[str] = []
     output.extend(validate_skill_paths(config))
+    output.extend(validate_openai_metadata(config))
     output.extend(validate_markdown_links())
     output.extend(validate_pipeline_chain())
+    output.extend(validate_agents_router())
+    output.extend(validate_handoff_schema())
     output.extend(validate_codex_runtime_surface())
+    output.extend(validate_license())
 
     for prompt, expected in EXPECTED_SAMPLES.items():
         actual, reason = route(prompt, config)
         if actual != expected:
             raise AssertionError(f"route mismatch: expected {expected}, got {actual}: {prompt}")
-        output.append(f"PASS route {expected} ({reason}): {prompt}")
+        output.append(f"PASS static route fixture {expected} ({reason}): {prompt}")
 
     print("\n".join(output))
-    print("PASS Academic Research Workspace smoke test")
+    print("PASS Academic Research Workspace static smoke test (not a Codex runtime invocation test)")
     return 0
 
 
